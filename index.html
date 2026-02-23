@@ -1,187 +1,275 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Players</title>
-  <link rel="icon" type="image/jpeg" href="https://i.pinimg.com/736x/98/c1/80/98c1805f69c2ebb120e3079236045fc6.jpg">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Players</title>
+<link rel="icon" type="image/jpeg" href="https://i.pinimg.com/736x/98/c1/80/98c1805f69c2ebb120e3079236045fc6.jpg">
 
-  <style>
-    html { scroll-behavior: smooth; }
+<style>
+/* ================= THEME VARIABLES ================= */
+:root {
+    --bg-gradient: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    --text-color: white;
+    --glass-bg: rgba(255, 255, 255, 0.08);
+    --glass-border: rgba(255, 255, 255, 0.15);
+    --nav-bg: rgba(0, 0, 0, 0.4);
+    --accent: #e63946;
+}
 
-    body {
-      font-family: "Segoe UI", sans-serif;
-      background: linear-gradient(120deg, #111, #1a1a1a, #111);
-      background-size: 400% 400%;
-      animation: bgMove 12s infinite alternate ease-in-out;
-      color: white;
-      margin: 0;
-      padding: 0;
-    }
+body.light-mode {
+    --bg-gradient: linear-gradient(135deg, #e0eafc, #cfdef3);
+    --text-color: #111;
+    --glass-bg: rgba(255, 255, 255, 0.6);
+    --glass-border: rgba(0, 0, 0, 0.1);
+    --nav-bg: rgba(255, 255, 255, 0.5);
+}
 
-    @keyframes bgMove {
-      0% { background-position: 0% 50%; }
-      100% { background-position: 100% 50%; }
-    }
+html { scroll-behavior: smooth; }
 
-    nav {
-      background-color: rgba(0, 0, 0, 0.9);
-      position: fixed;
-      top: 0;
-      width: 100%;
-      z-index: 1000;
-      display: flex;
-      justify-content: center;
-      gap: 2em;
-      padding: 1em 0;
-    }
-    nav a {
-      color: white;
-      text-decoration: none;
-      font-weight: bold;
-      transition: 0.3s;
-    }
-    nav a:hover { color: #e63946; }
+body {
+    font-family: "Segoe UI", sans-serif;
+    background: var(--bg-gradient);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    transition: background 0.4s ease, color 0.4s ease;
+}
 
-    section {
-      padding: 120px 50px 50px;
-      max-width: 1000px;
-      margin: auto;
-    }
+/* ================= PARTICLES ================= */
+#particles {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
 
-    h1, h2 { color: #fff; }
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: rgba(255,255,255,0.6);
+    border-radius: 50%;
+    opacity: 0.8;
+    animation: float 10s linear infinite;
+}
 
-    h1 {
-      font-size: 3em;
-      text-align: center;
-      margin-top: 0.5em;
-      opacity: 0;
-      animation: fadeSlide 1.3s ease forwards;
-    }
+@keyframes float {
+    0% { transform: translateY(0px) translateX(0px); opacity: 0.8; }
+    50% { opacity: 0.4; }
+    100% { transform: translateY(-1000px) translateX(50px); opacity: 0; }
+}
 
-    h2 {
-      color: #e63946;
-      font-size: 2.2em;
-      margin-bottom: 0.3em;
-      opacity: 0;
-      animation: fadeSlide 1.3s ease forwards;
-      animation-delay: 0.5s;
-    }
+/* ================= NAVBAR ================= */
+nav {
+    background: var(--nav-bg);
+    backdrop-filter: blur(15px);
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5em;
+    padding: 1em 0;
+    border-bottom: 1px solid var(--glass-border);
+}
 
-    p.intro-text {
-      text-align: center;
-      font-size: 1.2em;
-      color: #ccc;
-      opacity: 0;
-      animation: fadeSlide 1.3s ease forwards;
-      animation-delay: 0.8s;
-    }
+nav a {
+    color: var(--text-color);
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.9em;
+    transition: 0.3s;
+}
 
-    @keyframes fadeSlide {
-      0% { opacity: 0; transform: translateY(30px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
+nav a:hover { color: var(--accent); }
 
-    .player-card {
-      background: rgba(0,0,0,0.8);
-      padding: 1.2em;
-      border-radius: 12px;
-      margin-bottom: 1.5em;
-      box-shadow: 0 0 15px rgba(255,255,255,0.1);
-      opacity: 0;
-      transform: translateY(40px);
-      animation: cardFade 1.2s ease forwards;
-    }
+#theme-toggle {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.8em;
+}
 
-    .player-card:nth-of-type(1) { animation-delay: 1s; }
-    .player-card:nth-of-type(2) { animation-delay: 1.3s; }
-    .player-card:nth-of-type(3) { animation-delay: 1.6s; }
-    .player-card:nth-of-type(4) { animation-delay: 1.9s; }
-    .player-card:nth-of-type(5) { animation-delay: 2.2s; }
+/* ================= SECTION ================= */
+section {
+    padding-top: 150px;
+    padding-bottom: 80px;
+    max-width: 1100px;
+    margin: auto;
+}
 
-    @keyframes cardFade {
-      0% { opacity: 0; transform: translateY(40px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
+h1 {
+    font-size: 3em;
+    text-align: center;
+    margin-bottom: 10px;
+}
 
-    .player-card h3 {
-      font-size: 1.6em;
-      margin-bottom: 0.2em;
-      color: #e63946;
-      animation: glow 2s infinite alternate;
-    }
+.intro-text {
+    text-align: center;
+    margin-bottom: 40px;
+    opacity: 0.8;
+}
 
-    @keyframes glow {
-      0% { text-shadow: 0 0 5px #e63946; }
-      100% { text-shadow: 0 0 15px #e63946; }
-    }
-  </style>
+/* ================= GLASS PLAYER CARDS ================= */
+.player-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(15px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 1.5em;
+    margin-bottom: 25px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    opacity: 0;
+    transform: translateY(30px);
+    transition: 0.8s ease-out;
+}
+
+.player-card.visible {
+    opacity: 1;
+    transform: translateY(0px);
+}
+
+.player-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 0 35px rgba(230,57,70,0.4);
+}
+
+.player-card h3 {
+    color: var(--accent);
+    font-size: 1.6em;
+}
+
+/* ================= RIPPLE ================= */
+#theme-ripple {
+    position: fixed;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    pointer-events: none;
+    transform: scale(0);
+    z-index: 3000;
+}
+
+#theme-ripple.active {
+    animation: rippleEffect 0.6s ease-out forwards;
+}
+
+@keyframes rippleEffect {
+    to { transform: scale(150); opacity: 0; }
+}
+</style>
 </head>
 
 <body>
 
-  <nav>
-    <a href="https://b2029coadelacruz.github.io/Q2-Project-Proposal/">HOME</a>
-    <a href="https://kskdheksnd.github.io/Overview/">OVERVIEW</a>
-    <a href="https://kskdheksnd.github.io/Players/">PLAYERS</a>
-    <a href="https://kskdheksnd.github.io/Training/">TRAINING & STATS</a>
-    <a href="https://kskdheksnd.github.io/Hall-of-Fame/">HALL OF FAME</a>
-  </nav>
+<div id="particles"></div>
+<div id="theme-ripple"></div>
 
-  <section>
-    <h1>Player Profiles</h1>
-    <p class="intro-text">Meet the greatest football players and legends of the sport.</p>
+<nav>
+<a href="https://b2029coadelacruz.github.io/Q2-Project-Proposal/">HOME</a>
+<a href="https://kskdheksnd.github.io/Overview/">OVERVIEW</a>
+<a href="https://kskdheksnd.github.io/Players/">PLAYERS</a>
+<a href="https://kskdheksnd.github.io/Training/">TRAINING & STATS</a>
+<a href="https://kskdheksnd.github.io/Hall-of-Fame/">HALL OF FAME</a>
+<button id="theme-toggle">SWITCH MODE</button>
+</nav>
 
-    <h2>Featured Players</h2>
+<section>
+<h1>Player Profiles</h1>
+<p class="intro-text">Meet the greatest football players and legends of the sport.</p>
 
-    <div class="player-card">
-      <h3>Lionel Messi</h3>
-      <p><strong>Position:</strong> Forward</p>
-      <p><strong>Strengths:</strong> Dribbling, playmaking, precision finishing</p>
-      <p><strong>Biography:</strong> Widely regarded as one of the greatest players of all time, Messi has won multiple Ballon d'Or awards and set countless records.</p>
-    </div>
+<div class="player-card">
+<h3>Lionel Messi</h3>
+<p><strong>Position:</strong> Forward</p>
+<p><strong>Strengths:</strong> Dribbling, playmaking, precision finishing</p>
+<p><strong>Biography:</strong> Widely regarded as one of the greatest players of all time, Messi has won multiple Ballon d'Or awards and set countless records.</p>
+</div>
 
-    <div class="player-card">
-      <h3>Cristiano Ronaldo</h3>
-      <p><strong>Position:</strong> Forward</p>
-      <p><strong>Strengths:</strong> Physicality, heading, long-range shooting</p>
-      <p><strong>Biography:</strong> A global football icon known for unmatched athleticism and a legendary scoring record across multiple leagues.</p>
-    </div>
+<div class="player-card">
+<h3>Cristiano Ronaldo</h3>
+<p><strong>Position:</strong> Forward</p>
+<p><strong>Strengths:</strong> Physicality, heading, long-range shooting</p>
+<p><strong>Biography:</strong> A global football icon known for unmatched athleticism and a legendary scoring record across multiple leagues.</p>
+</div>
 
-    <div class="player-card">
-      <h3>Neymar Jr.</h3>
-      <p><strong>Position:</strong> Forward / Winger</p>
-      <p><strong>Strengths:</strong> Creativity, flair, agility</p>
-      <p><strong>Biography:</strong> One of Brazil’s brightest stars, Neymar is known for his skillful footwork and exciting attacking style.</p>
-    </div>
+<div class="player-card">
+<h3>Neymar Jr.</h3>
+<p><strong>Position:</strong> Forward / Winger</p>
+<p><strong>Strengths:</strong> Creativity, flair, agility</p>
+<p><strong>Biography:</strong> One of Brazil’s brightest stars, Neymar is known for his skillful footwork and exciting attacking style.</p>
+</div>
 
-    <div class="player-card">
-      <h3>Kylian Mbappé</h3>
-      <p><strong>Position:</strong> Forward</p>
-      <p><strong>Strengths:</strong> Speed, acceleration, finishing</p>
-      <p><strong>Biography:</strong> A generational talent who became a World Cup champion at age 19, dominating with explosive pace.</p>
-    </div>
+<div class="player-card">
+<h3>Kylian Mbappé</h3>
+<p><strong>Position:</strong> Forward</p>
+<p><strong>Strengths:</strong> Speed, acceleration, finishing</p>
+<p><strong>Biography:</strong> A generational talent who became a World Cup champion at age 19, dominating with explosive pace.</p>
+</div>
 
-    <div class="player-card">
-      <h3>Virgil van Dijk</h3>
-      <p><strong>Position:</strong> Defender</p>
-      <p><strong>Strengths:</strong> Defense, leadership, aerial duels</p>
-      <p><strong>Biography:</strong> One of the most dominant defenders in modern football, known for his calm composure and elite defending.</p>
-    </div>
+<div class="player-card">
+<h3>Virgil van Dijk</h3>
+<p><strong>Position:</strong> Defender</p>
+<p><strong>Strengths:</strong> Defense, leadership, aerial duels</p>
+<p><strong>Biography:</strong> One of the most dominant defenders in modern football, known for his calm composure and elite defending.</p>
+</div>
 
-  </section>
+</section>
 
-  <section id="sources">
-    <h2>Sources</h2>
-     <p>All images and materials belong to their respective owners:</p>
-      <ul>
-        <li>Bulletin, B. T. R. S. T. T. I. (2021, August 16). Immokalee man inducted into hall of fame. Lake Okeechobee News. https://lakeonews.com/labelle/stories/immokalee-man-inducted-into-hall-of-fame,22187</li>
-        <li>Times, N. Y. (2014, June 15). How we play the game. The New York Times. https://www.nytimes.com/interactive/2014/06/15/sports/worldcup/how-we-play.html</li>
-        <li>Baxter, K. (2025, December 6). How to buy tickets for the 2026 FIFA World Cup - Los Angeles Times. Los Angeles Times. https://www.latimes.com/sports/soccer/story/2025-12-06/how-to-buy-tickets-for-2026-fifa-world-cup</li>
-        <li>Instagram. (n.d.-b). https://www.instagram.com/p/DMwtBsgo1jx/?img_index=7</li>
-      </ul>
- </section>
+<script>
+const themeToggle = document.getElementById('theme-toggle');
+const body = document.body;
+const ripple = document.getElementById('theme-ripple');
 
+if (localStorage.getItem('theme') === 'light') body.classList.add('light-mode');
+
+themeToggle.addEventListener('click', (e) => {
+const rect = themeToggle.getBoundingClientRect();
+ripple.style.left = rect.left + rect.width / 2 + 'px';
+ripple.style.top = rect.top + rect.height / 2 + 'px';
+ripple.style.background = body.classList.contains('light-mode') ? '#0f2027' : '#ffffff';
+ripple.classList.add('active');
+
+setTimeout(() => {
+body.classList.toggle('light-mode');
+localStorage.setItem('theme', body.classList.contains('light-mode') ? 'light' : 'dark');
+}, 200);
+
+setTimeout(() => {
+ripple.classList.remove('active');
+ripple.style.transform = 'scale(0)';
+}, 600);
+});
+
+/* PARTICLES */
+const particlesContainer = document.getElementById('particles');
+for (let i = 0; i < 50; i++) {
+const p = document.createElement('div');
+p.classList.add('particle');
+p.style.left = Math.random() * window.innerWidth + 'px';
+p.style.top = Math.random() * window.innerHeight + 'px';
+p.style.animationDuration = 5 + Math.random() * 10 + 's';
+particlesContainer.appendChild(p);
+}
+
+/* SCROLL FADE */
+const cards = document.querySelectorAll('.player-card');
+const observer = new IntersectionObserver(entries => {
+entries.forEach(entry => {
+if (entry.isIntersecting) entry.target.classList.add('visible');
+});
+}, { threshold: 0.3 });
+
+cards.forEach(card => observer.observe(card));
+</script>
 
 </body>
 </html>
